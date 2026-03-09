@@ -5,6 +5,7 @@ import click.yinsb.icmtracing.temporal.model.EventMessage;
 import click.yinsb.icmtracing.temporal.workflow.MainWorkflow;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,10 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class WorkflowClientService {
 
-    @Autowired
-    private WorkflowClient client;
+    private final WorkflowClient client;
 
     public void start(EventMessage eventMessage) {
         try {

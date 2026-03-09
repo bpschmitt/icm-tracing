@@ -11,6 +11,4 @@ import lombok.NoArgsConstructor;
 public class EventMessage {
     private String id;
     private String type;
-    private boolean timeout;
-
 }

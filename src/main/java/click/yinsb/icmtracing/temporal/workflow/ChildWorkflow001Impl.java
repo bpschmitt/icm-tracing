@@ -3,7 +3,6 @@ package click.yinsb.icmtracing.temporal.workflow;
 import click.yinsb.icmtracing.temporal.activities.Activity001;
 import click.yinsb.icmtracing.temporal.model.Constants;
 import click.yinsb.icmtracing.temporal.model.EventMessage;
-import click.yinsb.icmtracing.temporal.model.Workflow001Result;
 import io.temporal.activity.ActivityOptions;
 import io.temporal.common.RetryOptions;
 import io.temporal.spring.boot.WorkflowImpl;
@@ -29,10 +28,10 @@ public class ChildWorkflow001Impl implements ChildWorkflow001 {
 					.setStartToCloseTimeout(Duration.ofMinutes(2)).build());
 
 	@Override
-	public Workflow001Result run(EventMessage eventMessage) {
+	public void run(EventMessage eventMessage) {
 		log.info("run child workflow 001");
 
-		return activity1.runActivity(eventMessage);
+		activity1.runActivity(eventMessage);
 	}
 
 }
