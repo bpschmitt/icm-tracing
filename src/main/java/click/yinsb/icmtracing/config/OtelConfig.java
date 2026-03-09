@@ -20,7 +20,7 @@ public class OtelConfig {
     @Bean
     OpenTelemetry openTelemetry() {
         Resource resource = Resource.getDefault()
-                .merge(Resource.create(Attributes.of(AttributeKey.stringKey("service.name"), "icm-tracing")));
+                .merge(Resource.create(Attributes.of(AttributeKey.stringKey("service.name"), "multi-trace-group")));
 
         SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
                 .setResource(resource)
