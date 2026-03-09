@@ -3,6 +3,8 @@
 - maven 3.9.x
 - temporal version 1.5.1 (Server 1.29.1, UI 2.42.1
 
+check screenshots directory for known issues.
+
 ## Up & Running
 
 ```shell
