@@ -1,15 +1,22 @@
 package click.yinsb.icmtracing;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import click.yinsb.icmtracing.temporal.client.WorkflowClientService;
+import click.yinsb.icmtracing.temporal.model.EventMessage;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api")
+@RequestMapping
 @RestController
 public class HelloController {
+    private final WorkflowClientService workflowClientService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello world";
+    public HelloController(WorkflowClientService workflowClientService) {
+        this.workflowClientService = workflowClientService;
+    }
+
+    @PostMapping("/hello")
+    public void hello(EventMessage eventMessage) {
+        workflowClientService.start(eventMessage);
     }
 }
