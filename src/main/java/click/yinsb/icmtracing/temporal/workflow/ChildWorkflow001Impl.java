@@ -18,13 +18,15 @@ public class ChildWorkflow001Impl implements ChildWorkflow001 {
 
 	private final Activity001 activity1 = Workflow.newActivityStub(Activity001.class,
 			ActivityOptions.newBuilder()
-					.setRetryOptions(
-							RetryOptions.newBuilder()
-									.setMaximumAttempts(8)
-									.setInitialInterval(Duration.ofSeconds(2))
-									.build()
-					)
-					.setStartToCloseTimeout(Duration.ofMinutes(2)).build());
+					.setStartToCloseTimeout(Duration.ofMinutes(5))
+					.setScheduleToCloseTimeout(Duration.ofMinutes(120))
+					.setRetryOptions(RetryOptions.newBuilder()
+										.setInitialInterval(Duration.ofSeconds(60))
+										.setMaximumInterval(Duration.ofMinutes(5))
+										.setBackoffCoefficient(2)
+										.setMaximumAttempts(5)
+										.build())
+					.build());
 
 	@Override
 	public void run(EventMessage eventMessage) {
