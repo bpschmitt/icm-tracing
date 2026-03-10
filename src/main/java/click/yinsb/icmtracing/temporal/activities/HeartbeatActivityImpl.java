@@ -13,6 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/**
+ * Emits a "heartbeat" span as a child of the workflow span so the trace shows
+ * periodic activity. Temporal's StartActivity:RecordHeartbeat spans are filtered
+ * out in the collector so only these custom heartbeat spans appear.
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor
