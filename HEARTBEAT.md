@@ -55,6 +55,31 @@ spring:
 
 Change `60` to any positive number of seconds to make heartbeats more or less frequent.
 
+## OTel Collector: Dropping Temporal Activity Spans
+
+Temporal’s OpenTelemetry integration creates a span for every activity execution (e.g. `StartActivity:RecordHeartbeat`, `RunActivity:RecordHeartbeat`). If we did not filter these, each heartbeat would appear twice in the trace: once as our custom `heartbeat` span (child of the workflow) and once as Temporal’s activity span. To avoid that duplication, the collector drops Temporal’s RecordHeartbeat activity spans so only the custom `heartbeat` spans are exported.
+
+In `otel-collector.yml`, the **filter** processor is configured to drop spans whose name matches either of these:
+
+| Span name (dropped) | Source |
+|---------------------|--------|
+| `StartActivity:RecordHeartbeat` | Temporal (activity start) |
+| `RunActivity:RecordHeartbeat` | Temporal (activity run) |
+
+Configuration (excerpt):
+
+```yaml
+processors:
+  filter/drop_temporal_heartbeat_activity:
+    error_mode: ignore
+    traces:
+      span:
+        - 'name == "StartActivity:RecordHeartbeat"'
+        - 'name == "RunActivity:RecordHeartbeat"'
+```
+
+This processor is included in both trace pipelines (`traces/jaeger` and `traces/nr`) before the batch processor. Spans that match either condition are dropped; all other spans (including our custom `heartbeat` spans) pass through. The filter uses OTTL (OpenTelemetry Transformation Language): when a span condition evaluates to true, that span is dropped.
+
 ## Components
 
 | Component | Description |
