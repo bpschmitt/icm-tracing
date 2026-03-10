@@ -4,10 +4,7 @@ This document describes the heartbeat span feature: why it exists, how it works,
 
 ## Overview
 
-The app emits **heartbeat** spans as **children** of the Temporal workflow spans:
-
-- `RunWorkflow:MainWorkflow`
-- `RunWorkflow:ChildWorkflow001`
+The app emits **heartbeat** spans only as **children** of `RunWorkflow:MainWorkflow`. The child workflow (`RunWorkflow:ChildWorkflow001`) does not emit heartbeats.
 
 A heartbeat span is created on a fixed interval (default 60 seconds) while the workflow is running. That gives observability tools (e.g. New Relic, Jaeger) a signal that the workflow is still active, which is especially useful for long-running workflows that would otherwise show little or no activity in a trace.
 
@@ -21,7 +18,7 @@ A heartbeat span is created on a fixed interval (default 60 seconds) while the w
 4. The activity creates a new span named `"heartbeat"` with that context as its **parent**, then ends the span immediately. The span is exported via OTLP like any other span.
 5. The loop stops when the main work completes; the workflow then finishes.
 
-Because the parent context is the workflow span, each heartbeat appears as a direct child of `RunWorkflow:MainWorkflow` or `RunWorkflow:ChildWorkflow001` in the trace.
+Because the parent context is the MainWorkflow span, each heartbeat appears as a direct child of `RunWorkflow:MainWorkflow` in the trace. The OTel collector filters out Temporal’s `StartActivity:RecordHeartbeat` / `RunActivity:RecordHeartbeat` spans so only these custom `heartbeat` spans are exported.
 
 ### Why an Activity?
 
@@ -35,10 +32,7 @@ RunWorkflow:MainWorkflow
 ├── heartbeat
 ├── …
 └── RunWorkflow:ChildWorkflow001
-    ├── heartbeat
-    ├── RunActivity:...
-    ├── heartbeat
-    └── …
+    └── RunActivity:...
 ```
 
 ## Configuration
@@ -69,7 +63,7 @@ Change `60` to any positive number of seconds to make heartbeats more or less fr
 | **HeartbeatActivityImpl** | Implements the activity: builds an OTel `SpanContext` from the IDs, starts a span named `"heartbeat"` with that as parent, then ends it. Registered on the same task queue as other activities. |
 | **EventMessage.heartbeatIntervalSeconds** | Optional integer; carries the interval (seconds) from the client into the workflows. |
 | **MainWorkflowImpl** | Starts the child workflow and a parallel loop that calls the heartbeat activity every N seconds until the child completes. |
-| **ChildWorkflow001Impl** | Runs the main activity and a parallel loop that calls the heartbeat activity every N seconds until the activity completes. |
+| **ChildWorkflow001Impl** | Runs the main activity only; it does not emit heartbeat spans. |
 
 ## Edge Cases
 
