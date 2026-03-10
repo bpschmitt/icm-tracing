@@ -23,7 +23,11 @@ processors:
 
 service:
   pipelines:
-    traces:
+    traces/jaeger:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/jaeger, otlp/newrelic, debug]
+      exporters: [otlp/jaeger]
+    traces/nr:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/newrelic, debug]
