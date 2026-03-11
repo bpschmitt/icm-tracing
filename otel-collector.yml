@@ -23,7 +23,7 @@ processors:
     error_mode: ignore
     traces:
       span:
-        # Drop Temporal's StartActivity:RecordHeartbea and RunActivity:RecordHeartbeat so only custom "heartbeat" spans appear
+        # Drop Temporal's StartActivity:RecordHeartbeat and RunActivity:RecordHeartbeat so only custom "heartbeat" spans appear
         - 'name == "StartActivity:RecordHeartbeat"'
         - 'name == "RunActivity:RecordHeartbeat"'
   batch: {}
